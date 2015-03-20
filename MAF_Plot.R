@@ -1,9 +1,7 @@
 plotMAFs = function(xname, yname, xfile, yfile, removeBA=FALSE) {
 	# Input is the .frq file produced by calling plink --freq
-	x = paste(xfile, sep="")
-	y = paste(yfile, sep="")
-	Con1 = read.table(x, header=T)
-	Con2 = read.table(y, header=T)
+	Con1 = read.table(xfile, header=T)
+	Con2 = read.table(yfile, header=T)
 
 	# Remove NAs
 	Con1.noNA = Con1[complete.cases(Con1), ]
