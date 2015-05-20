@@ -59,9 +59,9 @@ cleanMAFs <- function(file1, file2, difference=0.1) {
 	return(SNPlist)
 }
 
-file1 = "C:\\Users\\Matt\\Desktop\\WorkplacePlink\\CaseFreqs.frq"
-file2 = "C:\\Users\\Matt\\Desktop\\WorkplacePlink\\Con2Freqs.frq"
-file3 = "C:\\Users\\Matt\\Desktop\\NewControls\\NewCon2Freq.frq"
+file1 = #file location
+file2 = #file location
+file3 = #file location
 
 write.table(cleanMAFs(file1, file2), file ="MAFexclusion_1_p1", sep='\n', quote=F, row.names=F, col.names=F)
 write.table(cleanMAFs(file1, file3), file ="MAFexclusion_2_p1", sep='\n', quote=F, row.names=F, col.names=F)
