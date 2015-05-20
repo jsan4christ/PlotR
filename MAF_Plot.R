@@ -1,4 +1,8 @@
 plotMAFs = function(xname, yname, xfile, yfile, removeBA=FALSE) {
+	# Given an allele frequency file for two datasets, plot each SNP
+	# positioned by their MAFs per dataset. Perfect for checking that
+	# the SNPs are correctly labelled.
+	
 	# Input is the .frq file produced by calling plink --freq
 	Con1 = read.table(xfile, header=T)
 	Con2 = read.table(yfile, header=T)
