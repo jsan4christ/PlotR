@@ -24,8 +24,8 @@ print('Parsing GT data (for point colours)')
 cols <- read.table(GTfile,header=T)
 
 # Tickers
-skippedSNPs=0
-totalSNPs=0
+skippedSNPs <- 0
+totalSNPs <- 0
 
 print('------------------------------------------------------------------')
 
