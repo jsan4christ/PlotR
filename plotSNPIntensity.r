@@ -24,10 +24,10 @@ print('Parsing GT data (for point colours)')
 cols <- read.table(GTfile,header=T)
 
 # Tickers
-skippedSNPs <- 0
-totalSNPs <- 0
+skippedSNPs=0
+totalSNPs=0
 
-print('------------------------------------------------------------------')
+print('--------------------------------------------------------------------')
 
 # Loop SNPs, currently probably not the most efficient approach but it'll work
 for (eachsnp in args) {
@@ -38,6 +38,7 @@ for (eachsnp in args) {
 	if (!grepl(sepChar, eachsnp)) {
 		print(paste('Skipping ',eachsnp,' due to missing separation character (',sepChar,').',sep=''))
 		skippedSNPs = skippedSNPs + 1
+		print('--------------------------------------------------------------------')
 		next
 	}
 
@@ -51,6 +52,8 @@ for (eachsnp in args) {
 	# Check the SNP, and only one version of that SNP, exists in dataset
 	if (dim(snp)[2] != 1) {
 		print(paste('Skipping ',eachsnp,' due to missing or duplicate value in XY dataset.',sep=''))
+		skippedSNPs = skippedSNPs + 1
+		print('--------------------------------------------------------------------')
 		next
 	}
 	print('Removing CHROM and POS data from isolated subset')
@@ -101,7 +104,7 @@ for (eachsnp in args) {
 	plot(snp$X[ControlIDs], snp$Y[ControlIDs], xlim=c(0,xlim.fixed), ylim=c(0,ylim.fixed), col=rainbow(4)[1 + as.numeric(snpcol$colID[ControlIDs])], pch=16, main=paste(j,':',i,' Intensity (Control Only)',sep=''), xlab='X', ylab='Y')
 	dev.off()
 
-	print('------------------------------------------------------------------')
+	print('--------------------------------------------------------------------')
 }
 
 print('All SNPs plotted successfully.')
