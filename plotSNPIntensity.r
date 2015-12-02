@@ -4,7 +4,7 @@
 # e.g. 'Rscript plotSNPIntensity.r CHR1:BP1 CHR2:BP2 CHR3:BP3'	 		#
 #################################################################################
 
-# Note: Currently XYfile is subsetted for each SNP, this could be improved with pre-loop subsetting by chromosome
+# Note: Currently XYfile is subsetted for each SNP, this could be improved with pre-loop chromosome subsets
 
 # Optional
 xlim.fixed <- 2
@@ -20,14 +20,25 @@ args <- commandArgs(trailingOnly=TRUE)
 # Bring in all SNPs
 print('Parsing XY Data')
 dat <- read.table(XYfile,header=T)
+print('Parsing GT data (for point colours)')
+cols <- read.table(GTfile,header=T)
+
+# Tickers
+skippedSNPs=0
+totalSNPs=0
+
+print('------------------------------------------------------------------')
 
 # Loop SNPs, currently probably not the most efficient approach but it'll work
 for (eachsnp in args) {
 
+	totalSNPs = totalSNPs + 1
+
 	# Skip if separation character is not in a given argument
 	if (!grepl(sepChar, eachsnp)) {
-		warning(paste('Skipping ',eachsnp,' due to missing separation character (',sepChar,').',sep=''))
-		break 
+		print(paste('Skipping ',eachsnp,' due to missing separation character (',sepChar,').',sep=''))
+		skippedSNPs = skippedSNPs + 1
+		next
 	}
 
 	# Use i for BP, j for CHR
@@ -37,14 +48,14 @@ for (eachsnp in args) {
 	# Isolate SNP of interest
 	print(paste('Isolating XY data for SNP on CHR ',j,' at BP ',i,sep=''))
 	snp <- data.frame(t(dat[dat$POS == i & dat$CHR == j,]))
+	# Check the SNP, and only one version of that SNP, exists in dataset
+	if (dim(snp)[2] != 1) {
+		print(paste('Skipping ',eachsnp,' due to missing or duplicate value in XY dataset.',sep=''))
+		next
+	}
 	print('Removing CHROM and POS data from isolated subset')
 	snp <- subset(snp, row.names(snp) != 'CHROM' & row.names(snp) != 'POS')
 
-	# Check the SNP, and only one version of that SNP, exists in dataset
-	if (dim(snp)[2] != 1) {
-		warning(paste('Skipping ',eachsnp,' due to missing or duplicate value in XY dataset.',sep=''))
-		break
-	}
 
 	# Split XY columns
 	names(snp) <- c('XY')
@@ -53,9 +64,7 @@ for (eachsnp in args) {
 	snp$Y <- lapply(strsplit(as.character(snp$XY), ','), '[', 2)
 
 	# Add colours
-	print('Parsing GT data (for point colours)')
-	cols <- read.table(GTfile,header=T)
-	print(paste('Isolating GT data for SNP on CHR ',j' at BP ',i,sep=''))
+	print(paste('Isolating GT data for SNP on CHR ',j,' at BP ',i,sep=''))
 	snpcol <- data.frame(t(cols[cols$POS == i & cols$CHR == j,]))
 	print('Removing CHROM and POS data from isolated subset')
 	snpcol <- subset(snpcol, row.names(snpcol) != 'CHROM' & row.names(snpcol) != 'POS')
@@ -88,9 +97,12 @@ for (eachsnp in args) {
 	dev.off()
 
 	print(paste('Plotting figure as SNPIntensity_',j,':',i,'_Control.png',sep=''))
-	png(paste('SNPIntensity_BP',j,':',i,'_Control.png',sep=''))
+	png(paste('SNPIntensity_',j,':',i,'_Control.png',sep=''))
 	plot(snp$X[ControlIDs], snp$Y[ControlIDs], xlim=c(0,xlim.fixed), ylim=c(0,ylim.fixed), col=rainbow(4)[1 + as.numeric(snpcol$colID[ControlIDs])], pch=16, main=paste(j,':',i,' Intensity (Control Only)',sep=''), xlab='X', ylab='Y')
 	dev.off()
 
-	print('Done')
+	print('------------------------------------------------------------------')
 }
+
+print('All SNPs plotted successfully.')
+print(paste(skippedSNPs,'of',totalSNPs, 'SNPs skipped.',sep=' '))
