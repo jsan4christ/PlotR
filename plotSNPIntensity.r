@@ -90,17 +90,17 @@ for (eachsnp in args) {
 
 	# Plot to file
 	print(paste('Plotting figure as SNPIntensity_',j,':',i,'_Combined.png',sep=''))
-	png(paste('SNPIntensity_',j,':',i,'_Combined.png',sep=''))
+	png(paste('SNPIntensity_',j,'-',i,'_Combined.png',sep=''))
 	plot(snp$X, snp$Y, xlim=c(0,xlim.fixed), ylim=c(0,ylim.fixed), col=rainbow(4)[1 + as.numeric(snpcol$colID)], pch=16, main=paste(j,':',i,' Intensity (Case+Control)',sep=''), xlab='X', ylab='Y')
 	dev.off()
 
 	print(paste('Plotting figure as SNPIntensity_',j,':',i,'_Case.png',sep=''))
-	png(paste('SNPIntensity_',j,':',i,'_Case.png',sep=''))
+	png(paste('SNPIntensity_',j,'-',i,'_Case.png',sep=''))
 	plot(snp$X[CaseIDs], snp$Y[CaseIDs], xlim=c(0,xlim.fixed), ylim=c(0,ylim.fixed), col=rainbow(4)[1 + as.numeric(snpcol$colID[CaseIDs])], pch=16, main=paste(j,':',i,' Intensity (Case Only)',sep=''), xlab='X', ylab='Y')
 	dev.off()
 
 	print(paste('Plotting figure as SNPIntensity_',j,':',i,'_Control.png',sep=''))
-	png(paste('SNPIntensity_',j,':',i,'_Control.png',sep=''))
+	png(paste('SNPIntensity_',j,'-',i,'_Control.png',sep=''))
 	plot(snp$X[ControlIDs], snp$Y[ControlIDs], xlim=c(0,xlim.fixed), ylim=c(0,ylim.fixed), col=rainbow(4)[1 + as.numeric(snpcol$colID[ControlIDs])], pch=16, main=paste(j,':',i,' Intensity (Control Only)',sep=''), xlab='X', ylab='Y')
 	dev.off()
 
