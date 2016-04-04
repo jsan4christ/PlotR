@@ -52,7 +52,7 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 	mtext(side=4, line=3, m2, col='red')
 
 	# HaploPS Segments
-	if(is.vector(haplops)) {
+	if(is.vector(haplops) & !is.na(haplops)) {
 		# check haplops is a vector of pairs
 		if ( (length(haplops)/2)%%1 == 0 ) {
 			print(paste(length(haplops)/2,' HaploPS pairs detected.',sep=''))
