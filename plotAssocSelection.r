@@ -20,7 +20,10 @@
 # x2: end of xlim
 # title: Figure title
 
-plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspos='V2', ihsval='V7', xpehh=NA, xpehhpos='pos', xpehhval='normxpehh', haplops=NA, x1=min(assoc[,assocpos]), x2=max(assoc[,assocpos]), title=NA) {
+plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspos='V2', ihsval='V7', xpehh=NA, xpehhpos='pos', xpehhval='normxpehh', haplops=NA, x1=min(assoc[,assocpos]), x2=max(assoc[,assocpos]), title=NA, plot=FALSE, plotname='defaultOut.png') {
+
+	# Optionally plot the figure as a .png, note that book-ending this function with png() and dev.off() will do the same.
+	if (plot) { png(plotname, height=750, width=1000, res=100) }
 
 	# TODO: check that ihs OR xpehh have been included, currently we default at iHS
 
@@ -65,4 +68,6 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 
 	# Legend
 	legend('topleft', legend=c(expression(-log[10](italic(p))), m2, 'HaploPS'), pch=c(20,20,15), col=c('black','red','blue'))
+
+	if (plot) { dev.off() }
 }
