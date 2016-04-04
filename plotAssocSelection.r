@@ -1,18 +1,54 @@
 # Currently under construction
-# Aim to clean this up and produce a script which will overlay association and selection data at a given locus
-# Take in genomic region & chromosome (xr1:start and xr2:end), selection (association, ihs, xpehh, haplos) as bools & paths,
+# Take in genomic region & chromosome (xr1:start and xr2:end),& selection (association, ihs, xpehh, haplos)
 # Output plot
 
-plotTemplate <- function(assoc, ihs, xpehh, haplo, xrange1, xrange2, title, haplox1, haplox2) {
+# TODO: Include HaploPS, perhaps as a list of start and ends
 
+plotAssocSelection <- function(assoc,assocpos='BP',assocval='P',ihs=NA,ihspos='V2',ihsval='V7',xpehh=NA,xpehhpos='pos',xpehhval='norm$
+        print(max(assoc[,assocpos]))
+
+        # TODO: check that ihs OR xpehh have been included
+
+        # TODO: check non NA files exist, return error that these need to be parsed if they do not
+
+        options(scipen=5)
+
+        # Plot base associations
+        print('Assoc')
+        plot(assoc[,assocpos], -log10(assoc[,assocval]), pch=20, cex=0.5, xlim=c(x1,x2), xlab='Position (bp)', ylab=expression(-log[10](itali$
+
+        # Add second plot layer only if ihs or xpehh file was provided
+
+        if (is.data.frame(ihs)) {
+                print('iHS')
+                m2 <- '|iHS|'
+                par(new=T)
+                plot(ihs[,ihspos], abs(ihs[,ihsval]), pch=20, cex=0.5, xlim=c(x1,x2), xlab=NA, ylab=NA, axes=F, col='red')
+        } else if (is.data.frame(xpehh)) {
+                print('XP-EHH')
+                m2 <- '|XP-EHH|'
+                par(new=T)
+                plot(xpehh[,xpehhpos], abs(xpehh[,xpehhval]), pch=20, cex=0.5, xlim=c(x1,x2), xlab=NA, ylab=NA, axes=F, col='red')
+        }
+
+        # Legend
+        axis(side=4, col='red')
+        mtext(side=4, line=3, m2, col='red')
+
+        # HaploPS Segments
+
+        ## TO DO ##
+
+        # Legend
+        legend('topleft', legend=c(expression(-log[10](italic(p))), m2, 'HaploPS'), pch=c(20,20,15), col=c('black','red','blue'))
 }
 
-
+# Precursor functions
 plotAsoc_XPEHH <- function(ASSOC, XP, xrange1, xrange2, title) {
   png('outFile.png',height=750,width=1000,res=150)
-  plot(get(ASSOC)['BP'], -log10(get(ASSOC)['P']), pch=20, cex=0.5, xlim=c(xrange1,xrange2),xlab='Position (bp)',ylab=expression(-log[10](italic(p))), main=title)
-  par(new=T); plot(get(XP)['pos'], abs(get(XP)['normxpehh']), pch=20, cex=0.5, xlim=c(xrange1,xrange2),xlab=NA,ylab=NA,axes=F,col='red')
-  axis(side=4, col='red'); mtext(side=4,line=3,'|XP-EHH|', col='red')
+  plot(ASSOC['BP'], -log10(ASSOC['P']), pch=20, cex=0.5, xlim=c(xrange1,xrange2),xlab='Position (bp)',ylab=expression(-log[10](italic(p))), main=title)
+  par(new=T); plot(XP['pos'], abs(XP['normxpehh']), pch=20, cex=0.5, xlim=c(xrange1,xrange2),xlab=NA,ylab=NA,axes=F,col='red')
+  axis(side=4, col='red'); mtext(side=4,line=3,'XP-EHH|', col='red')
   legend('topleft', legend=c(expression(-log[10](italic(p))), '|XP-EHH|'), pch=c(20, 20), col=c('black','red')); dev.off()
 }
 
