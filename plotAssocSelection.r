@@ -20,7 +20,7 @@
 # x2: end of xlim
 # title: Figure title
 
-plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspos='V2', ihsval='V7', xpehh=NA, xpehhpos='pos', xpehhval='normxpehh', haplops=NA, x1=min(assoc[,assocpos]), x2=max(assoc[,assocpos]), title=NA, plot=FALSE, plotname='defaultOut.png') {
+plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspos='V2', ihsval='V7', xpehh=NA, xpehhpos='pos', xpehhval='normxpehh', haplops=NA, x1=min(assoc[,assocpos]), x2=max(assoc[,assocpos]), title=NA, plot=FALSE, plotname='defaultOut.png', y1bot=-log10(max(assoc$P)), y1top=-log10(min(assoc$P)), y2bot=NA, y2top=NA) {
 
 	# Optionally plot the figure as a .png, note that book-ending this function with png() and dev.off() will do the same.
 	if (plot) { png(plotname, height=750, width=1000, res=100) }
@@ -31,7 +31,7 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 
 	# Plot base associations
 	print('Assoc')
-	plot(assoc[,assocpos], -log10(assoc[,assocval]), pch=20, cex=0.5, xlim=c(x1,x2), xlab='Position (bp)', ylab=expression(-log[10](italic(p))), main=title)
+	plot(assoc[,assocpos], -log10(assoc[,assocval]), pch=20, cex=0.5, xlim=c(x1,x2), ylim=c(y1bot, y1top), xlab='Position (bp)', ylab=expression(-log[10](italic(p))), main=title)
 
 	# Add second plot layer only if ihs or xpehh file was provided
 
@@ -39,12 +39,16 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 		print('Notice: Assuming input is an iHS results file.')
 		m2 <- '|iHS|'
 		par(new=T)
-		plot(ihs[,ihspos], abs(ihs[,ihsval]), pch=20, cex=0.5, xlim=c(x1,x2), xlab=NA, ylab=NA, axes=F, col='red')
+		if (is.na(y2bot)) { y2bot <- min(abs(ihs[ihsval])) }
+		if (is.na(y2top)) { y2top <- max(abs(ihs[ihsval])) }
+		plot(ihs[,ihspos], abs(ihs[,ihsval]), pch=20, cex=0.5, xlim=c(x1,x2), ylim=c(y2bot,y2top), xlab=NA, ylab=NA, axes=F, col='red')
 	} else if (is.data.frame(xpehh)) {
 		print('Notice: Assuming input is an XP-EHH results file.')
 		m2 <- '|XP-EHH|'
 		par(new=T)
-		plot(xpehh[,xpehhpos], abs(xpehh[,xpehhval]), pch=20, cex=0.5, xlim=c(x1,x2), xlab=NA, ylab=NA, axes=F, col='red')
+		if (is.na(y2bot)) { y2bot <- min(abs(xpehh[xpehhval])) }
+		if (is.na(y2top)) { y2top <- max(abs(xpehh[xpehhval])) }
+		plot(xpehh[,xpehhpos], abs(xpehh[,xpehhval]), pch=20, cex=0.5, xlim=c(x1,x2), ylim=c(y2bot,y2top), xlab=NA, ylab=NA, axes=F, col='red')
 	}
 
 	# Selection plot axis
