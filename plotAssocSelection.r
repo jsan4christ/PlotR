@@ -68,10 +68,10 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 		} else {
 			print('Warning: Variable haplops is not a vector of paired integers.')
 		}
+		legend('topleft', legend=c(expression(-log[10](italic(p))), m2, 'HaploPS'), pch=c(20,20,15), col=c('black','red','blue'))
+	} else {
+		legend('topleft', legend=c(expression(-log[10](italic(p))), m2), pch=c(20,20), col=c('black','red'))
 	}
-
-	# Legend
-	legend('topleft', legend=c(expression(-log[10](italic(p))), m2, 'HaploPS'), pch=c(20,20,15), col=c('black','red','blue'))
 
 	if (plot) { dev.off() }
 }
