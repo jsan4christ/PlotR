@@ -1,66 +1,68 @@
-# Currently under construction
-# Take in genomic region & chromosome (xr1:start and xr2:end),& selection (association, ihs, xpehh, haplos)
-# Output plot
+# plotAssocSelection.r
+# Matt Ravenhall
+# Given an association results files and an iHS or XP-EHH results files, plus an option list of haplotypes,
+# Plots assoc & selection signals for a genomic region (default full range of loci in assoc file)
 
-# TODO: Include HaploPS, perhaps as a list of start and ends
+# TODO: Add some form of annotation overlay to identify where genes etc. are located.
 
-plotAssocSelection <- function(assoc,assocpos='BP',assocval='P',ihs=NA,ihspos='V2',ihsval='V7',xpehh=NA,xpehhpos='pos',xpehhval='norm$
-        print(max(assoc[,assocpos]))
+# Format of arguments
+# assoc: variable containing a data frame
+# assocpos: BP column name for assoc data frame (default: 'BP')
+# assocval: P value column name for assoc data frame (default: 'P')
+# ihs: variable containing an ihs data frame, with at least position and ihs columns
+# ihspos: BP column name for iHS data frame (default: 'V2')
+# ihsval: iHS value column name for iHS data frame (default: 'V7')
+# xpehh: variable containing an xp-ehh data frame, with at least position and ihs columns
+# xpehhpos: BP column name for XP-EHH data frame (default: 'pos')
+# xpehhval: XP-EHH value column name for XP-EHH data frame (default: 'normxpehh')
+# haplops: vector containing haplotype start and end positions in pairs (ie. hap1start, hap1end, hap2start, hap2end)
+# x1: start of xlim
+# x2: end of xlim
+# title: Figure title
 
-        # TODO: check that ihs OR xpehh have been included
+plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspos='V2', ihsval='V7', xpehh=NA, xpehhpos='pos', xpehhval='normxpehh', haplops=NA, x1=min(assoc[,assocpos]), x2=max(assoc[,assocpos]), title=NA) {
 
-        # TODO: check non NA files exist, return error that these need to be parsed if they do not
+	# TODO: check that ihs OR xpehh have been included, currently we default at iHS
 
-        options(scipen=5)
+	options(scipen=5)
 
-        # Plot base associations
-        print('Assoc')
-        plot(assoc[,assocpos], -log10(assoc[,assocval]), pch=20, cex=0.5, xlim=c(x1,x2), xlab='Position (bp)', ylab=expression(-log[10](itali$
+	# Plot base associations
+	print('Assoc')
+	plot(assoc[,assocpos], -log10(assoc[,assocval]), pch=20, cex=0.5, xlim=c(x1,x2), xlab='Position (bp)', ylab=expression(-log[10](italic(p))), main=title)
 
-        # Add second plot layer only if ihs or xpehh file was provided
+	# Add second plot layer only if ihs or xpehh file was provided
 
-        if (is.data.frame(ihs)) {
-                print('iHS')
-                m2 <- '|iHS|'
-                par(new=T)
-                plot(ihs[,ihspos], abs(ihs[,ihsval]), pch=20, cex=0.5, xlim=c(x1,x2), xlab=NA, ylab=NA, axes=F, col='red')
-        } else if (is.data.frame(xpehh)) {
-                print('XP-EHH')
-                m2 <- '|XP-EHH|'
-                par(new=T)
-                plot(xpehh[,xpehhpos], abs(xpehh[,xpehhval]), pch=20, cex=0.5, xlim=c(x1,x2), xlab=NA, ylab=NA, axes=F, col='red')
-        }
+	if (is.data.frame(ihs)) {
+		print('Notice: Assuming input is an iHS results file.')
+		m2 <- '|iHS|'
+		par(new=T)
+		plot(ihs[,ihspos], abs(ihs[,ihsval]), pch=20, cex=0.5, xlim=c(x1,x2), xlab=NA, ylab=NA, axes=F, col='red')
+	} else if (is.data.frame(xpehh)) {
+		print('Notice: Assuming input is an XP-EHH results file.')
+		m2 <- '|XP-EHH|'
+		par(new=T)
+		plot(xpehh[,xpehhpos], abs(xpehh[,xpehhval]), pch=20, cex=0.5, xlim=c(x1,x2), xlab=NA, ylab=NA, axes=F, col='red')
+	}
 
-        # Legend
-        axis(side=4, col='red')
-        mtext(side=4, line=3, m2, col='red')
+	# Selection plot axis
+	axis(side=4, col='red')
+	mtext(side=4, line=3, m2, col='red')
 
-        # HaploPS Segments
+	# HaploPS Segments
+	if(is.vector(haplops)) {
+		# check haplops is a vector of pairs
+		if ( (length(haplops)/2)%%1 == 0 ) {
+			print(paste(length(haplops)/2,' HaploPS pairs detected.',sep=''))
+			for (i in 1:(length(haplops)/2)) {
+				print(paste(haplops[(2*i)-1], haplops[2*i], sep=' '))
+				segments(haplops[(2*i)-1], 3, x1=haplops[2*i], y1=3, col=rgb(0,0,1,0.4), lwd=1000, lend=1)
+			}
+			axis(side=1, col='blue')
+		} else {
+			print('Warning: Variable haplops is not a vector of paired integers.')
+		}
+	}
 
-        ## TO DO ##
-
-        # Legend
-        legend('topleft', legend=c(expression(-log[10](italic(p))), m2, 'HaploPS'), pch=c(20,20,15), col=c('black','red','blue'))
-}
-
-# Precursor functions
-plotAsoc_XPEHH <- function(ASSOC, XP, xrange1, xrange2, title) {
-  png('outFile.png',height=750,width=1000,res=150)
-  plot(ASSOC['BP'], -log10(ASSOC['P']), pch=20, cex=0.5, xlim=c(xrange1,xrange2),xlab='Position (bp)',ylab=expression(-log[10](italic(p))), main=title)
-  par(new=T); plot(XP['pos'], abs(XP['normxpehh']), pch=20, cex=0.5, xlim=c(xrange1,xrange2),xlab=NA,ylab=NA,axes=F,col='red')
-  axis(side=4, col='red'); mtext(side=4,line=3,'XP-EHH|', col='red')
-  legend('topleft', legend=c(expression(-log[10](italic(p))), '|XP-EHH|'), pch=c(20, 20), col=c('black','red')); dev.off()
-}
-
-plotAssoc_iHS_HaploPS <- function() {
-  png('outFile.png',height=750,width=1000,res=150)
-  par(mar=c(5,5,2,5))
-  plot(assoc.12$BP, -log10(assoc.12$P), pch=20, xlim=c(xr1,xr2), main=title, xlab='Position (bp)', ylab=expression(-log[10](italic(p))))
-  par(new=T)
-  plot(ihs$V2, abs(ihs$V7), xlim=c(xr1,xr2), col='red', axes=F,xlab=NA,ylab=NA,pch=20)
-  segments(xxr1.2,3,x1=xxr2.2,y1=3, col=rgb(0,0,1,0.4), lwd=1000, lend=1)
-  axis(side=4, col='red'); mtext(side=4,line=3,'|iHS|',col='red')
-  legend('topleft', legend=c(expression(-log[10](italic(p))), '|iHS|', 'HaploPS'), pch=c(20, 20, 15), col=c('black','red','blue'))
-  axis(side=1, col='blue')
-  dev.off()
+	# Legend
+	legend('topleft', legend=c(expression(-log[10](italic(p))), m2, 'HaploPS'), pch=c(20,20,15), col=c('black','red','blue'))
 }
