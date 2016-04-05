@@ -43,7 +43,6 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 	if (plot) { png(plotname, height=750, width=1000, res=100) }
 
 	# Plot base associations
-	print('Assoc')
 	plot(assoc[,assocpos], -log10(assoc[,assocval]), pch=allpch, cex=allcex, xlim=c(x1,x2), ylim=c(y1bot, y1top), xlab='Position (bp)', ylab=expression(-log[10](italic(p))), main=title)
 	if (is.numeric(y1line)) { abline(h=y1line,col='black',lty=2) }
 
