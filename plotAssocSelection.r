@@ -31,21 +31,22 @@
 # gene: optional vector of length 2, for plotting custom start and end of gene, if absent uses start and end of xons
 # genename: optional string for gene name in legend
 # allcex: all cex sizes
+# allpch: all pch plot points
 
-plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspos='V2', ihsval='V7', xpehh=NA, xpehhpos='pos', xpehhval='normxpehh', haplops=NA, x1=min(assoc[,assocpos]), x2=max(assoc[,assocpos]), title=NA, plot=FALSE, plotname='defaultOut.png', y1bot=-log10(max(assoc$P)), y1top=-log10(min(assoc$P)), y2bot=NA, y2top=NA, exons=NA, y1line=NA, y2line=NA, gene=NA, genename='Gene',allcex=0.5) {
+plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspos='V2', ihsval='V7', xpehh=NA, xpehhpos='pos', xpehhval='normxpehh', haplops=NA, x1=min(assoc[,assocpos]), x2=max(assoc[,assocpos]), title=NA, plot=FALSE, plotname='defaultOut.png', y1bot=-log10(max(assoc$P)), y1top=-log10(min(assoc$P)), y2bot=NA, y2top=NA, exons=NA, y1line=NA, y2line=NA, gene=NA, genename='Gene',allcex=0.5,allpch=20) {
 
 	options(scipen=5)
 	ishaplops <- (is.vector(haplops) & !is.na(haplops))
 	isexons <- (is.vector(exons) & !is.na(exons))
 	isihs <- is.data.frame(ihs)
 	isxpehh <- is.data.frame(xpehh)
-	if (isihs & isxpehh) { print('Warning: Both iHS and XP-EHH files passed, defaulting to iHS only.' }
+	if (isihs & isxpehh) { print('Warning: Both iHS and XP-EHH files passed, defaulting to iHS only.') }
 	
 	if (plot) { png(plotname, height=750, width=1000, res=100) }
 
 	# Plot base associations
 	print('Assoc')
-	plot(assoc[,assocpos], -log10(assoc[,assocval]), pch=20, cex=allcex, xlim=c(x1,x2), ylim=c(y1bot, y1top), xlab='Position (bp)', ylab=expression(-log[10](italic(p))), main=title)
+	plot(assoc[,assocpos], -log10(assoc[,assocval]), pch=allpch, cex=allcex, xlim=c(x1,x2), ylim=c(y1bot, y1top), xlab='Position (bp)', ylab=expression(-log[10](italic(p))), main=title)
 	if (is.numeric(y1line)) { abline(h=y1line,col='black',lty=2) }
 
 	# Add second plot layer only if ihs or xpehh file was provided
@@ -55,7 +56,7 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 		par(new=T)
 		if (is.na(y2bot)) { y2bot <- min(abs(ihs[ihsval])) }
 		if (is.na(y2top)) { y2top <- max(abs(ihs[ihsval])) }
-		plot(ihs[,ihspos], abs(ihs[,ihsval]), pch=20, cex=allcex, xlim=c(x1,x2), ylim=c(y2bot, y2top), xlab=NA, ylab=NA, axes=F, col='red')
+		plot(ihs[,ihspos], abs(ihs[,ihsval]), pch=allpch, cex=allcex, xlim=c(x1,x2), ylim=c(y2bot, y2top), xlab=NA, ylab=NA, axes=F, col='red')
 		if (is.numeric(y2line)) { abline(h=y2line,col='red',lty=2) }
 	} else if (isxpehh) {
 		print('Notice: Assuming input is an XP-EHH results file.')
@@ -63,7 +64,7 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 		par(new=T)
 		if (is.na(y2bot)) { y2bot <- min(abs(xpehh[xpehhval])) }
 		if (is.na(y2top)) { y2top <- max(abs(xpehh[xpehhval])) }
-		plot(xpehh[,xpehhpos], abs(xpehh[,xpehhval]), pch=20, cex=allcex, xlim=c(x1,x2), ylim=c(y2bot, y2top), xlab=NA, ylab=NA, axes=F, col='red')
+		plot(xpehh[,xpehhpos], abs(xpehh[,xpehhval]), pch=allpch, cex=allcex, xlim=c(x1,x2), ylim=c(y2bot, y2top), xlab=NA, ylab=NA, axes=F, col='red')
 		if (is.numeric(y2line)) { abline(h=y2line,col='red',lty=2) }
 	} else {
 		print('Notice: No iHS or XP-EHH results file provided')
