@@ -35,7 +35,8 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 
 	options(scipen=5)
 	ishaplops <- (is.vector(haplops) & !is.na(haplops))
-	isexons <- (is.vector(exons) & !is.na(exons))
+	isgene <- (length(gene) == 2)
+	isexons <- (is.vector(exons[1]) & !is.na(exons[1]))
 	isihs <- is.data.frame(ihs)
 	isxpehh <- is.data.frame(xpehh)
 	if (isihs & isxpehh) { print('Warning: Both iHS and XP-EHH files passed, defaulting to iHS only.') }
@@ -43,6 +44,7 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 	if (plot) { png(plotname, height=750, width=1000, res=100) }
 
 	# Plot base associations
+	par(mar=c(5,5,2,5))
 	plot(assoc[,assocpos], -log10(assoc[,assocval]), pch=allpch, cex=allcex, xlim=c(x1,x2), ylim=c(y1bot, y1top), xlab='Position (bp)', ylab=expression(-log[10](italic(p))), main=title)
 	if (is.numeric(y1line)) { abline(h=y1line,col='black',lty=2) }
 
@@ -88,6 +90,11 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 
 	exonh=-0.2
 	# Custom gene annotation
+	if (isgene) {
+		print(paste('Plotting gene length as ',gene[1],' to ',gene[2],'.',sep=''))
+		segments(gene[1],exonh,x1=gene[2],y1=exonh, col=rgb(0.1,0.5,0.1,0.6), lwd=30, lend=1)
+	}
+
 	if (isexons) {
 		# Check gene locations are in pairs
 		if ( (length(exons)/2)%%1 == 0 ) {
@@ -97,12 +104,9 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 				segments(exons[(2*i)-1], exonh, x1=exons[2*i], y1=exonh, col='black', lwd=30, lend=1)
 			}
 			# whole gene
-			if (length(gene) != 2) {
+			if (!isgene) {
 				print('Assuming gene length as start of exon 1 to end of exon n.')
 				segments(exons[1],exonh,x1=exons[length(exons)],y1=exonh, col=rgb(0.1,0.5,0.1,0.6), lwd=30, lend=1)
-			} else {
-				print(paste('Plotting gene length as ',gene[1],' to ',gene[2],'.',sep=''))
-				segments(gene[1],exonh,x1=gene[2],y1=exonh, col=rgb(0.1,0.5,0.1,0.6), lwd=30, lend=1)
 			}
 		}
 	}
@@ -110,7 +114,7 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 	# Legend
 	# check for haplops and genes
 	if (ishaplops) {
-		if (isexons) {
+		if (isexons | isgene) {
 			# Yes HaploPS & Yes Gene
 			legend('topleft', legend=c(expression(-log[10](italic(p))), m2, 'HaploPS', genename), pch=c(20,20,15,15), col=c('black','red','blue',rgb(0.1,0.5,0.1,1)))
 		} else {
@@ -118,7 +122,7 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 			legend('topleft', legend=c(expression(-log[10](italic(p))), m2, 'HaploPS'), pch=c(20,20,15), col=c('black','red','blue'))
 		}
 	} else {
-		if (isexons) {
+		if (isexons | isgene) {
 			# No HaploPS, Yes gene
 			legend('topleft', legend=c(expression(-log[10](italic(p))), m2, genename), pch=c(20,20,15), col=c('black','red',rgb(0.1,0.5,0.1,1)))
 		} else {
