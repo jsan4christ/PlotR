@@ -105,7 +105,6 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 				print(paste('Plotting gene length as ',gene[1],' to ',gene[2],'.',sep=''))
 				segments(gene[1],exonh,x1=gene[2],y1=exonh, col=rgb(0.1,0.5,0.1,0.6), lwd=30, lend=1)
 			}
-			axis(side=1, col='blue')
 		}
 	}
 
