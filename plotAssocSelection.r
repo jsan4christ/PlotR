@@ -3,8 +3,6 @@
 # Given an association results files and an iHS or XP-EHH results files, plus an option list of haplotypes,
 # Plots assoc & selection signals for a genomic region (default full range of loci in assoc file)
 
-# TODO: Add some form of annotation overlay to identify where genes etc. are located.
-
 # Format of arguments
 # assoc: variable containing a data frame
 # assocpos: BP column name for assoc data frame (default: 'BP')
