@@ -32,7 +32,7 @@
 # allcex: all cex sizes
 # allpch: all pch plot points
 
-plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspos='V2', ihsval='V7', xpehh=NA, xpehhpos='pos', xpehhval='normxpehh', haplops=NA, x1=min(assoc[,assocpos]), x2=max(assoc[,assocpos]), title=NA, plot=FALSE, plotname='defaultOut.png', y1bot=-log10(max(assoc$P)), y1top=-log10(min(assoc$P)), y2bot=NA, y2top=NA, exons=NA, y1line=NA, y2line=NA, xline=NA gene=NA, genename='Gene',allcex=0.5,allpch=20) {
+plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspos='V2', ihsval='V7', xpehh=NA, xpehhpos='pos', xpehhval='normxpehh', haplops=NA, x1=min(assoc[,assocpos]), x2=max(assoc[,assocpos]), title=NA, plot=FALSE, plotname='defaultOut.png', y1bot=-log10(max(assoc$P)), y1top=-log10(min(assoc$P)), y2bot=NA, y2top=NA, exons=NA, y1line=NA, y2line=NA, xline=NA, gene=NA, genename='Gene',allcex=0.5,allpch=20) {
 
 	options(scipen=5)
 	ishaplops <- (is.vector(haplops) & !is.na(haplops))
