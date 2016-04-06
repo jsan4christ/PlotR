@@ -26,12 +26,13 @@
 # exons: optional vector of numeric pairs, for plotting exons
 # y1line: add line for y1 axis (assoc)
 # y2line: add line for y2 axis (ihs/xpehh)
+# xline: add line for x axis (location)
 # gene: optional vector of length 2, for plotting custom start and end of gene, if absent uses start and end of xons
 # genename: optional string for gene name in legend
 # allcex: all cex sizes
 # allpch: all pch plot points
 
-plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspos='V2', ihsval='V7', xpehh=NA, xpehhpos='pos', xpehhval='normxpehh', haplops=NA, x1=min(assoc[,assocpos]), x2=max(assoc[,assocpos]), title=NA, plot=FALSE, plotname='defaultOut.png', y1bot=-log10(max(assoc$P)), y1top=-log10(min(assoc$P)), y2bot=NA, y2top=NA, exons=NA, y1line=NA, y2line=NA, gene=NA, genename='Gene',allcex=0.5,allpch=20) {
+plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspos='V2', ihsval='V7', xpehh=NA, xpehhpos='pos', xpehhval='normxpehh', haplops=NA, x1=min(assoc[,assocpos]), x2=max(assoc[,assocpos]), title=NA, plot=FALSE, plotname='defaultOut.png', y1bot=-log10(max(assoc$P)), y1top=-log10(min(assoc$P)), y2bot=NA, y2top=NA, exons=NA, y1line=NA, y2line=NA, xline=NA gene=NA, genename='Gene',allcex=0.5,allpch=20) {
 
 	options(scipen=5)
 	ishaplops <- (is.vector(haplops) & !is.na(haplops))
@@ -47,6 +48,7 @@ plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspo
 	par(mar=c(5,5,2,5))
 	plot(assoc[,assocpos], -log10(assoc[,assocval]), pch=allpch, cex=allcex, xlim=c(x1,x2), ylim=c(y1bot, y1top), xlab='Position (bp)', ylab=expression(-log[10](italic(p))), main=title)
 	if (is.numeric(y1line)) { abline(h=y1line,col='black',lty=2) }
+	if (is.numeric(xline)) { abline(v=xline, col='grey', lty=2) }
 
 	# Add second plot layer only if ihs or xpehh file was provided
 	if (isihs) {
