@@ -34,7 +34,7 @@
 plotAssocSelection <- function(assoc, assocpos='BP', assocval='P', ihs=NA, ihspos='V2', ihsval='V7', xpehh=NA, xpehhpos='pos', xpehhval='normxpehh', haplops=NA, x1=min(assoc[,assocpos]), x2=max(assoc[,assocpos]), title=NA, plot=FALSE, plotname='defaultOut.png', y1bot=-log10(max(assoc$P)), y1top=-log10(min(assoc$P)), y2bot=NA, y2top=NA, exons=NA, y1line=NA, y2line=NA, gene=NA, genename='Gene',allcex=0.5,allpch=20) {
 
 	options(scipen=5)
-	ishaplops <- (is.vector(haplops) & !is.na(haplops))
+	ishaplops <- (is.vector(haplops[1]) & !is.na(haplops[1]))
 	isgene <- (length(gene) == 2)
 	isexons <- (is.vector(exons[1]) & !is.na(exons[1]))
 	isihs <- is.data.frame(ihs)
